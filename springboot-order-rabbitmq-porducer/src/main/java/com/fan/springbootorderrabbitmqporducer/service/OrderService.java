@@ -1,5 +1,7 @@
 package com.fan.springbootorderrabbitmqporducer.service;
 
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,14 +54,47 @@ fanout
 //        rabbitTemplate.convertAndSend(exchangeName,"sms",orderId);
 //    }
 
-    public void makeOrder(String userId,String productId,int num){
+
+    /**
+     * topic
+     * @param userId
+     * @param productId
+     * @param num
+     */
+//    public void makeOrder(String userId,String productId,int num){
+//        // 1: 根据商品id查询库存是否充足
+//        // 2: 保存订单
+//        String orderId = UUID.randomUUID().toString();
+//        System.out.println("保存订单成功：id是：" + orderId);
+//        // 交换机
+//        String exchangeName = "topic_order_exchange";
+//        // 3: 发送消息
+//        rabbitTemplate.convertAndSend(exchangeName,"com.duanxin.xxx",orderId);
+//    }
+
+    /**
+     * ttl
+     *
+     * @param userId
+     * @param productId
+     * @param num
+     */
+    public void makeOrder(String userId, String productId, int num) {
         // 1: 根据商品id查询库存是否充足
         // 2: 保存订单
         String orderId = UUID.randomUUID().toString();
         System.out.println("保存订单成功：id是：" + orderId);
         // 交换机
-        String exchangeName = "topic_order_exchange";
+        String exchangeName = "ttl_direct_ex";
+        MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
+            public Message postProcessMessage(Message message) {
+                //这里就是字符串
+                message.getMessageProperties().setExpiration("5000");
+                message.getMessageProperties().setContentEncoding("UTF-8");
+                return message;
+            }
+        };
         // 3: 发送消息
-        rabbitTemplate.convertAndSend(exchangeName,"com.duanxin.xxx",orderId);
+        rabbitTemplate.convertAndSend(exchangeName, "ttlmessage", orderId,messagePostProcessor);
     }
 }
