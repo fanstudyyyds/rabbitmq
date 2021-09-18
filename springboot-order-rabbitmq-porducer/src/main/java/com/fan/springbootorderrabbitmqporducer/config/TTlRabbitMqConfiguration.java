@@ -32,6 +32,10 @@ public class TTlRabbitMqConfiguration {
     public Queue directttlqueue() {
         Map<String, Object> args=new HashMap<>();
         args.put("x-message-ttl",5000);
+        //超过的进入死信
+        args.put("x-max-length",5);
+        args.put("x-dead-letter-exchange","dead_direct_ex");
+        args.put("x-dead-letter-routing-key","dead");
         return new Queue("ttl.direct.queue", true,false,false,args);
     }
 

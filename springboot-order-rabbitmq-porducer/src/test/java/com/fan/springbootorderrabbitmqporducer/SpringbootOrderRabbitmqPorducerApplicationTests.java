@@ -13,8 +13,31 @@ class SpringbootOrderRabbitmqPorducerApplicationTests {
 
 
     @Test
-    public void contextLoads() {
-        orderService.makeOrder("100","100",10);
+    public void contextLoads_makeOrder_fanout() {
+        orderService.makeOrder_fanout("100","100",10);
+    }
+
+    @Test
+    public void contextLoads_makeOrder_direct() {
+        orderService.makeOrder_direct("100","100",10);
+    }
+
+    @Test
+    public void contextLoads_makeOrder_topic() {
+        orderService.makeOrder_topic("100","100",10);
+    }
+
+    @Test
+    public void contextLoads_makeOrder_ttl() {
+        for (int i = 0; i < 20; i++) {
+            orderService.makeOrder_ttl("100","100",10);
+
+        }
+    }
+
+    @Test
+    public void contextLoadsmakeOrder_ttl_MessagePostProcessor() {
+        orderService.makeOrder_ttl_MessagePostProcessor("100","100",10);
     }
 
 }
